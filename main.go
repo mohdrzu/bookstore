@@ -10,7 +10,9 @@ import (
 )
 
 type App struct {
-	books models.BookModel
+	books interface{
+		FindAll() ([]models.Book, error)
+	}
 }
 
 func main() {
