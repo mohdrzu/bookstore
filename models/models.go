@@ -9,8 +9,12 @@ type Book struct {
 	Price float32
 }
 
-func AllBooks(db *sql.DB) ([]Book, error){
-	rows, err := db.Query("SELECT * FROM books")
+type BookModel struct {
+	DB *sql.DB
+}
+
+func(m BookModel) FindAll() ([]Book, error){
+	rows, err := m.DB.Query("SELECT * FROM books")
 	if err != nil {
 		return nil, err
 	}
