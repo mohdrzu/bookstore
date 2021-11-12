@@ -1,6 +1,10 @@
 package models
 
-import "database/sql"
+import (
+	"context"
+	"database/sql"
+	"errors"
+)
 
 var DB *sql.DB
 
@@ -11,8 +15,13 @@ type Book struct {
 	Price float32
 }
 
-func AllBooks() ([]Book, error){
-	rows, err := DB.Query("SELECT * FROM books")
+func AllBooks(ctx context.Context) ([]Book, error){
+	db, ok := ctx.Value("db").(*sql.DB)
+	if !ok {
+		return nil, errors.New("could not get database connection pool from context")
+	}
+
+	rows, err := db.Query("SELECT * FROM books")
 	if err != nil {
 		return nil, err
 	}
