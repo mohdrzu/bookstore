@@ -1,22 +1,18 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
+	_ "github.com/lib/pq"
 	"github.com/muhammad-rz/bookstore/models"
 	"log"
 	"net/http"
-	_ "github.com/lib/pq"
 )
 
 func main(){
-	var err error
-
-	models.DB, err = sql.Open("postgres", "postgres://postgres:postgres@localhost/bookstore?sslmode=disable")
+	err := models.InitDB("postgres://postgres:postgres@localhost/bookstore?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	http.HandleFunc("/books", booksIndex)
 	http.ListenAndServe(":3000", nil)
 

@@ -2,7 +2,18 @@ package models
 
 import "database/sql"
 
-var DB *sql.DB
+var db *sql.DB
+
+func InitDB(dataSourceName string) error {
+	var err error
+
+	db, err = sql.Open("postgres", dataSourceName)
+	if err != nil {
+		return err
+	}
+
+	return db.Ping()
+}
 
 type Book struct {
 	Isbn string
@@ -12,7 +23,7 @@ type Book struct {
 }
 
 func AllBooks() ([]Book, error){
-	rows, err := DB.Query("SELECT * FROM books")
+	rows, err := db.Query("SELECT * FROM books")
 	if err != nil {
 		return nil, err
 	}
