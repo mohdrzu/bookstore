@@ -3,27 +3,33 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/lib/pq"
 	"github.com/muhammad-rz/bookstore/models"
 	"log"
 	"net/http"
-	_ "github.com/lib/pq"
 )
+
+type App struct {
+	db *sql.DB
+}
 
 func main(){
 	var err error
 
-	models.DB, err = sql.Open("postgres", "postgres://postgres:postgres@localhost/bookstore?sslmode=disable")
+	db, err := sql.Open("postgres", "postgres://postgres:postgres@localhost/bookstore?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("/books", booksIndex)
+	app := &App{db: db}
+
+	http.HandleFunc("/books", app.booksIndex)
 	http.ListenAndServe(":3000", nil)
 
 }
 
-func booksIndex(w http.ResponseWriter, r *http.Request){
-	bks, err := models.AllBooks()
+func(app *App) booksIndex(w http.ResponseWriter, r *http.Request){
+	bks, err := models.AllBooks(app.db)
 	if err != nil {
 		log.Println(err)
 		http.Error(w, http.StatusText(500), 500)

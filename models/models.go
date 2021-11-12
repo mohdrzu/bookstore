@@ -2,8 +2,6 @@ package models
 
 import "database/sql"
 
-var DB *sql.DB
-
 type Book struct {
 	Isbn string
 	Title string
@@ -11,8 +9,8 @@ type Book struct {
 	Price float32
 }
 
-func AllBooks() ([]Book, error){
-	rows, err := DB.Query("SELECT * FROM books")
+func AllBooks(db *sql.DB) ([]Book, error){
+	rows, err := db.Query("SELECT * FROM books")
 	if err != nil {
 		return nil, err
 	}
